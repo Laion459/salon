@@ -17,50 +17,76 @@ class HomePageController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show history salon.
      */
-    public function create()
+    public function history():View
     {
-        //
+        return view('history.history');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Call page Contacts.
      */
-    public function store(Request $request)
+    public function contacts():View
     {
-        //
+        return view('contacts.contacts');
     }
 
     /**
-     * Display the specified resource.
+     * Call page Services.
      */
-    public function show(HomePage $homePage)
+    public function cortes():View
     {
-        //
+        return view('services.cortes');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(HomePage $homePage)
+    public function coloracao():View
     {
-        //
+        return view('services.coloracao');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, HomePage $homePage)
+    public function tonalizacao():View
     {
-        //
+        return view('services.tonalizacao');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(HomePage $homePage)
+    public function reflexo():View
     {
-        //
+        return view('services.reflexo');
+    }
+
+    public function escova():View
+    {
+        return view('services.escova');
+    }
+
+    public function hidratacao():View
+    {
+        return view('services.hidratacao');
+    }
+
+    public function depilacao():View
+    {
+        return view('services.depilacao');
+    }
+
+    public function manicure():View
+    {
+        return view('services.manicure');
+    }
+
+    public function maquiagem():View
+    {
+        return view('services.maquiagem');
+    }
+
+    public function sobrancelhas():View
+    {
+        return view('services.sobrancelhas');
+    }
+
+    public function massagem():View
+    {
+        return view('services.massagem');
     }
 }

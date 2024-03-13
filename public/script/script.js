@@ -54,81 +54,107 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    // Initialize variables
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.carousel-item');
-    const dots = document.querySelectorAll('.carousel-indicators button');
-    const totalSlides = slides.length;
-    const intervalTime = 3000; // Intervalo de 3 segundos
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize variables
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-item');
+        const dots = document.querySelectorAll('.carousel-indicators button');
+        const totalSlides = slides.length;
+        const intervalTime = 3000; // Intervalo de 3 segundos
+        let slideInterval;
 
-    // Function to show a specific slide
-    function showSlide(index) {
-        slides.forEach((slide) => slide.classList.remove("active"));
-        slides[index].classList.add("active");
+        // Function to show a specific slide
+        function showSlide(index) {
+            slides.forEach((slide) => slide.classList.remove("active"));
+            slides[index].classList.add("active");
 
-        dots.forEach((dot) => dot.classList.remove("active"));
-        dots[index].classList.add("active");
-    }
+            dots.forEach((dot) => dot.classList.remove("active"));
+            dots[index].classList.add("active");
+        }
 
-    // Function to show the next slide
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
-    }
+        // Function to show the next slide
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }
 
-    // Function to show the previous slide
-    function prevSlide() {
-        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-        showSlide(currentSlide);
-    }
+        // Function to show the previous slide
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlide);
+        }
 
-    // Function to set the current slide
-    function setCurrentSlide(index) {
-        currentSlide = index - 1;
-        showSlide(currentSlide);
-    }
+        // Function to set the current slide
+        function setCurrentSlide(index) {
+            currentSlide = index;
+            showSlide(currentSlide);
+        }
 
-    // Set interval for auto-sliding
-    setInterval(nextSlide, intervalTime);
-    showSlide(currentSlide);
+        // Set interval for auto-sliding
+        function startSlideInterval() {
+            slideInterval = setInterval(nextSlide, intervalTime);
+        }
 
-    // Event listeners for next and previous buttons
-    document.querySelector('.carousel-control-prev').addEventListener('click', prevSlide);
-    document.querySelector('.carousel-control-next').addEventListener('click', nextSlide);
+        // Event listeners for next and previous buttons
+        const prevButton = document.querySelector('.carousel-control-prev');
+        const nextButton = document.querySelector('.carousel-control-next');
 
-    // Event listeners for indicator buttons
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            setCurrentSlide(index);
+        if (prevButton && nextButton) {
+            prevButton.addEventListener('click', function() {
+                prevSlide();
+                clearInterval(slideInterval);
+                startSlideInterval();
+            });
+
+            nextButton.addEventListener('click', function() {
+                nextSlide();
+                clearInterval(slideInterval);
+                startSlideInterval();
+            });
+        } else {
+            console.log("Prev or next button not found!");
+        }
+
+        // Event listeners for indicator buttons
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                setCurrentSlide(index);
+                clearInterval(slideInterval);
+                startSlideInterval();
+            });
+        });
+
+        // Start interval for auto-sliding
+        startSlideInterval();
+
+        // Mapa OpenLayers
+        var endereco = [-27.445827309755046, -48.37738612381911];
+
+        var map = new ol.Map({
+            target: 'map-container',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                }),
+                new ol.layer.Vector({
+                    source: new ol.source.Vector({
+                        features: [new ol.Feature({
+                            geometry: new ol.geom.Point(ol.proj.fromLonLat([endereco[1], endereco[0]]))
+                        })]
+                    }),
+                    style: new ol.style.Style({
+                        image: new ol.style.Icon({
+                            anchor: [0.5, 1],
+                            src: 'https://openlayers.org/en/latest/examples/data/icon.png'
+                        })
+                    })
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([endereco[1], endereco[0]]),
+                zoom: 15
+            })
         });
     });
 
-    // Mapa OpenLayers
-    var endereco = [-27.445827309755046, -48.37738612381911];
-
-    var map = new ol.Map({
-        target: 'map',
-        layers: [
-            new ol.layer.Tile({
-                source: new ol.source.OSM()
-            }),
-            new ol.layer.Vector({
-                source: new ol.source.Vector({
-                    features: [new ol.Feature({
-                        geometry: new ol.geom.Point(ol.proj.fromLonLat([endereco[1], endereco[0]]))
-                    })]
-                }),
-                style: new ol.style.Style({
-                    image: new ol.style.Icon({
-                        anchor: [0.5, 1],
-                        src: 'https://openlayers.org/en/latest/examples/data/icon.png'
-                    })
-                })
-            })
-        ],
-        view: new ol.View({
-            center: ol.proj.fromLonLat([endereco[1], endereco[0]]),
-            zoom: 15
-        })
-    });
 });
